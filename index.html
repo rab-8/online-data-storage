@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>অনলাইন ডাটা স্টোরেজ</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="shell"><button id="sidebarToggle" class="sidebar-toggle" aria-label="সাইডবার খুলুন বা বন্ধ করুন" aria-expanded="true">☰</button>
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="https://rab-8.github.io/images/SRB-8.png">
+            <h1> ORDMS </h1>
+        </div>
+        <p>র‍্যাব-৮</p><hr><button data-page="dashboard">🏠 Dashboard</button><button data-page="form">➕ তথ্য এন্ট্রি</button><button data-page="records">👥 সকল তথ্য</button><button data-page="backup">💾 Backup / Export</button><button data-page="settings">⚙️ সেটিং</button><button id="lockBtn" class="lock">🔒 Lock Screen</button></aside><section class="container">
+    <header class="topbar">
+      <div>
+        <h1>অনলাইন ডাটা স্টোরেজ</h1>
+        <p>Gmail লগইন ও ব্যক্তিগত ডাটা সংরক্ষণ</p>
+      </div>
+      <div class="live-clock" id="liveClock">--/--/----, --:--:--</div><button id="logoutBtn" class="danger hidden">লগআউট</button>
+    </header>
+
+    <section id="loginSection" class="card auth-card">
+      <h2>লগইন করুন</h2>
+      <p>প্রথমে Gmail দিয়ে লগইন করুন। এরপর প্রোটেক্টর পাসওয়ার্ড দিতে হবে।</p>
+      <button id="googleLoginBtn" class="google-btn">Google দিয়ে লগইন</button>
+      <p id="loginMessage" class="message"></p>
+    </section>
+
+    <section id="protectorSection" class="card hidden">
+      <h2>প্রোটেক্টর পাসওয়ার্ড</h2>
+      <p id="userEmail"></p>
+      <input id="protectorPassword" type="password" placeholder="প্রোটেক্টর পাসওয়ার্ড" />
+      <button id="unlockBtn" class="primary">প্রবেশ করুন</button>
+      <button id="setPasswordBtn" class="secondary hidden">নতুন পাসওয়ার্ড সেট করুন</button>
+      <p id="protectorMessage" class="message"></p>
+    </section>
+
+    <section id="appSection" class="hidden"><section id="backupPage" class="card hidden"><h2>💾 Backup / Export</h2><p>আপনার ডাটা নিরাপদে Backup রাখুন। Backup ফাইল অন্য ডিভাইসেও Restore করা যাবে।</p><div class="backup-actions"><button id="jsonBackupBtn" class="primary">⬇ JSON Backup</button><button id="jsonRestoreBtn" class="secondary">⬆ JSON Restore</button><button id="csvExportBtn" class="danger">📄 CSV Export</button><button id="printBtn" class="danger">🖨 A4 Print</button><button id="clearBtn" class="danger">🗑 সব ডাটা মুছুন</button></div><input id="restoreFile" type="file" accept="application/json" class="hidden"></section>
+      <section class="dashboard">
+        <div class="stat-card"><span>মোট ব্যক্তি</span><strong id="totalCount">০</strong></div>
+        <div class="stat-card"><span>স্বতন্ত্র কর্মস্থল</span><strong id="workplaceCount">০</strong></div>
+        <div class="stat-card"><span>স্বতন্ত্র বদলীস্থল</span><strong id="transferCount">০</strong></div>
+        <div class="stat-card"><span>সর্বশেষ প্রদর্শিত</span><strong id="viewCount">০</strong><small id="viewDateLabel">আজকের ভিউ</small></div>
+      </section>
+      <section class="card recent-dashboard-card">
+        <div class="recent-dashboard-heading"><h2>🕘 সর্বশেষ ৫টি রেকর্ড</h2><span>সর্বশেষ সংরক্ষিত তথ্য</span></div>
+        <div id="recentEntries" class="recent-entries"><p class="empty-recent">এখনও কোনো তথ্য নেই।</p></div>
+      </section>
+      <div id="recordsToolbar" class="toolbar records-toolbar hidden">
+        <input id="searchInput" type="search" placeholder="🔎 নাম, নং, পদবী, কর্মস্থল, বদলীস্থল, মোবাইল দিয়ে খুঁজুন..." />
+        <button id="recordsPrintBtn" class="primary records-print">🖨 Print</button>
+      </div>
+      <section id="settingsPage" class="card settings-card hidden">
+        <h2>🔑 পাসওয়ার্ড</h2>
+        <p>আপনার প্রোটেক্টর পাসওয়ার্ড পরিবর্তন করুন।</p>
+        <div class="settings-grid">
+          <label>নতুন পাসওয়ার্ড <span class="required">*</span><input id="newPasswordInput" type="password" placeholder="নতুন পাসওয়ার্ড লিখুন" /></label>
+          <label>নিশ্চিত করুন <span class="required">*</span><input id="confirmPasswordInput" type="password" placeholder="পাসওয়ার্ড আবার লিখুন" /></label>
+        </div>
+        <button id="changePasswordBtn" class="primary">🔐 পাসওয়ার্ড পরিবর্তন</button>
+        <p id="settingsMessage" class="message"></p>
+      </section>
+
+      <section id="formCard" class="card hidden">
+        <h2 id="formTitle">নতুন ডাটা যোগ করুন</h2>
+        <form id="recordForm">
+          <input type="hidden" id="recordId" />
+          <label>ছবি সংযুক্ত করুন <input id="photo" type="file" accept="image/*" /></label>
+          <div class="grid">
+            <label>ব্যক্তিগত নং <input id="personalNumber" list="personalNumberSuggestions" inputmode="numeric" maxlength="10" autocomplete="off" required /></label>
+            <label>Rab ID নং <input id="rabId" list="rabIdSuggestions" inputmode="numeric" maxlength="6" autocomplete="off" required /></label>
+            <label>রেশনি নং <input id="rationNumber" list="rationNumberSuggestions" inputmode="numeric" maxlength="6" autocomplete="off" required /></label>
+            <label>পদবী <input id="rank" list="rankSuggestions" autocomplete="off" required /></label>
+            <label>নাম <input id="name" list="nameSuggestions" autocomplete="off" required /></label>
+            <label>কর্মস্থল <input id="workplace" list="workplaceSuggestions" autocomplete="off" required /></label>
+            <label>বদলীস্থল <input id="transferPlace" list="transferSuggestions" autocomplete="off" /></label>
+            <label>তারিখ <input id="date" type="date" required /></label>
+            <label>স্মরক নং <input id="memorandumNumber" list="memorandumSuggestions" autocomplete="off" /></label>
+            <label>মোবাইল নং <input id="mobileNumber" list="mobileNumberSuggestions" inputmode="numeric" maxlength="11" autocomplete="off" required /></label>
+          </div>
+          <div class="form-actions">
+            <button class="primary" type="submit">সংরক্ষণ</button>
+            <button class="secondary" type="button" id="cancelBtn">বাতিল</button>
+          </div>
+          <datalist id="personalNumberSuggestions"></datalist>
+          <datalist id="rabIdSuggestions"></datalist>
+          <datalist id="rationNumberSuggestions"></datalist>
+          <datalist id="rankSuggestions"></datalist>
+          <datalist id="nameSuggestions"></datalist>
+          <datalist id="workplaceSuggestions"></datalist>
+          <datalist id="transferSuggestions"></datalist>
+          <datalist id="memorandumSuggestions"></datalist>
+          <datalist id="dateSuggestions"></datalist>
+          <datalist id="mobileNumberSuggestions"></datalist>
+          <p id="formMessage" class="message"></p>
+        </form>
+      </section>
+
+      <section class="card table-card">
+        <div class="records-heading"><h2>👥 সকল ব্যক্তির তথ্য</h2><span id="recordsCount">০ টি রেকর্ড</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>রো</th><th>ছবি</th><th>ব্যক্তিগত নং</th><th>Rab ID</th>
+                <th>রেশনি নং</th><th>পদবী</th><th>নাম</th><th>কর্মস্থল</th>
+                <th>বদলীস্থল</th><th>তারিখ</th><th>সময়</th><th>স্মরক নং</th><th>মোবাইল নং</th><th>অ্যাকশন</th>
+              </tr>
+            </thead>
+            <tbody id="recordsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </section></main>
+
+
+  <!-- বিস্তারিত Profile Modal -->
+  <div id="profileModal" class="profile-modal hidden" aria-hidden="true">
+    <div class="profile-modal-backdrop" id="profileModalBackdrop"></div>
+    <div class="profile-modal-card" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <div class="profile-modal-header">
+        <h2 id="profileModalTitle">👤 বিস্তারিত Profile</h2>
+        <button type="button" id="profileModalClose" class="profile-close" aria-label="বন্ধ করুন">×</button>
+      </div>
+      <div id="profileModalBody" class="profile-modal-body"></div>
+      <div class="profile-modal-actions">
+        <button type="button" id="profilePrintBtn" class="primary profile-print">🖨 Print</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
